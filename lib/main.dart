@@ -38,7 +38,7 @@ class _MyHomePageState extends State<MyHomePage> {
     print('File path recieved $filepath');
     String spath = filepath.substring(1, filepath.length);
     print('File slashed path is $spath');
-    String encryptedFilePath = EncryptData.encrypt_file(filepath);
+    String encryptedFilePath = EncryptData.encrypt_file(spath);
     print(encryptedFilePath);
   }
 
