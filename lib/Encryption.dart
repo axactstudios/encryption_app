@@ -11,11 +11,9 @@ class EncryptData {
     try {
       encFilepath = crypt.encryptFileSync(path);
       print('The encryption has been completed successfully.');
-      Fluttertoast.showToast(msg: 'Encrypted file path is $encFilepath');
     } on AesCryptException catch (e) {
       if (e.type == AesCryptExceptionType.destFileExists) {
         print('The encryption has been completed unsuccessfully.');
-        Fluttertoast.showToast(msg: 'Error: ${e.message}');
       }
       return null;
     }
