@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:encryptionapp/Encryption.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:path/path.dart';
 import 'package:permissions_plugin/permissions_plugin.dart';
@@ -11,7 +12,6 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -34,9 +34,32 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  List<String> imageUrls = [];
+
+  String _path;
+  Map<String, String> _paths;
+  bool _multiPick = true;
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+
+  Future<String> openFileExplorer() async {
+    try {
+      _path = null;
+      _paths = await FilePicker.getMultiFilePath(type: FileType.image);
+
+      encryptFiles();
+    } on PlatformException catch (e) {
+      print("Unsupported operation" + e.toString());
+    }
+    if (!mounted) return 'null';
+    return 'Success';
+  }
+
+  encryptFiles() {
+    _paths.forEach((fileName, filePath) => {encryptfile(filePath)});
+  }
+
   @override
   void initState() {
-    // TODO: implement initState
     request();
   }
 
@@ -48,20 +71,17 @@ class _MyHomePageState extends State<MyHomePage> {
     ]);
   }
 
-  void encryptfile() async {
-    File file = await FilePicker.getFile();
-    String filepath = file.path;
-    print('File path recieved $filepath');
-    String spath = filepath.substring(1, filepath.length);
+  void encryptfile(path) async {
+    print('File path recieved $path');
+    String spath = path.substring(1, path.length);
     print('File slashed path is $spath');
+    var name = basename(path);
     String encryptedFilePath = EncryptData.encrypt_file(spath);
     print(encryptedFilePath);
-    Fluttertoast.showToast(
-        msg:
-            'Encryption successful.\nEncrypted file path : $encryptedFilePath');
+    moveFile(encryptedFilePath, name);
   }
 
-  void decryptfile() async {
+  Future<String> decryptfile() async {
     File file = await FilePicker.getFile();
     String filepath = file.path;
     print('File path recieved $filepath');
@@ -72,32 +92,82 @@ class _MyHomePageState extends State<MyHomePage> {
     Fluttertoast.showToast(
         msg:
             'Encryption successful.\nEncrypted file path : $decryptedFilePath');
+    return 'Success';
+  }
+
+  Future<File> moveFile(path, filename) async {
+    print('start');
+    File sourceFile = File(path);
+    print('start1');
+    try {
+      // prefer using rename as it is probably faster
+      print('end1');
+      return await sourceFile
+          .rename('storage/emulated/0/EncryptedFiles/$filename.aes');
+    } on FileSystemException catch (e) {
+      print(e);
+
+      final newFile = await sourceFile
+          .copy('storage/emulated/0/EncryptedFiles/$filename.aes');
+      print('end');
+      await sourceFile.delete();
+      return newFile;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
-        title: Text(widget.title),
+        backgroundColor: Colors.black54,
+        title: Text('Encryption-Decryption Module'),
       ),
       body: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            FlatButton(
-              onPressed: () {
-                encryptfile();
+            InkWell(
+              onTap: () {
+                openFileExplorer().then((value) => _scaffoldKey.currentState
+                    .showSnackBar(
+                        SnackBar(content: Text('Successfully Encrypted'))));
               },
-              child: Text('Encrypt file'),
+              child: Card(
+                  color: Colors.black54,
+                  elevation: 10,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  child: Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child: Text(
+                      'Select and encrypt files',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  )),
             ),
-            FlatButton(
-              onPressed: () {
-                decryptfile();
+            InkWell(
+              onTap: () {
+                decryptfile().then((value) => _scaffoldKey.currentState
+                    .showSnackBar(
+                        SnackBar(content: Text('Successfully Decrypted'))));
               },
-              child: Text('Decrypt file'),
+              child: Card(
+                  color: Colors.black54,
+                  elevation: 10,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  child: Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child: Text(
+                      'Decrypt files',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  )),
             ),
           ],
         ),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
     );
   }
 }

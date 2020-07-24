@@ -31,6 +31,7 @@ dependencies:
   aes_crypt: ^0.1.1
   file_picker: ^1.13.0
   fluttertoast: ^7.0.1
+  path: 1.6.4
   permissions_plugin: ^1.1.4
 
 dev_dependencies:
