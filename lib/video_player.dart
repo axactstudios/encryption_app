@@ -30,10 +30,16 @@ class _VideoPlayerState extends State<VideoPlayer> {
     );
   }
 
+  void delete() {
+    final dir = Directory(widget.path);
+    dir.deleteSync(recursive: true);
+  }
+
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
+    delete();
     flickManager.dispose();
   }
 
