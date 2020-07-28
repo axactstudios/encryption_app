@@ -232,78 +232,101 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     _listofFiles();
+    double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        backgroundColor: Colors.black54,
-        title: Text('Encryption-Decryption Module'),
+        backgroundColor: Colors.blue,
+        title: Text('Encryption - Decryption Module'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Container(
-                width: double.infinity,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextField(
-                    controller: tc,
-                  ),
-                )),
-            InkWell(
-              onTap: () async {
-                statusOfFolderFilesEncryption = false;
-                await _listofFilesfromFolder(tc.text);
-                destFolderPath = tc2.text;
-                for (int i = 0; i < files.length; i++) {
-                  encryptfileforfolder(files[i].path, destFolderPath);
-                }
-                await setState(() {
-                  print('ho gaya');
-                });
-                statusOfFolderFilesEncryption = true;
-              },
-              child: Card(
-                  color: Colors.black54,
-                  elevation: 10,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
-                  child: Padding(
-                    padding: const EdgeInsets.all(18.0),
-                    child: Text(
-                      'Encrypt all in the folder',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  )),
-            ),
-            Container(
-                width: double.infinity,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextField(
-                    controller: tc2,
-                  ),
-                )),
-
+//            Container(
+//                width: double.infinity,
+//                child: Padding(
+//                  padding: const EdgeInsets.all(8.0),
+//                  child: TextField(
+//                    controller: tc,
+//                  ),
+//                )),
+//            InkWell(
+//              onTap: () async {
+//                statusOfFolderFilesEncryption = false;
+//                await _listofFilesfromFolder(tc.text);
+//                destFolderPath = tc2.text;
+//                for (int i = 0; i < files.length; i++) {
+//                  encryptfileforfolder(files[i].path, destFolderPath);
+//                }
+//                await setState(() {
+//                  print('ho gaya');
+//                });
+//                statusOfFolderFilesEncryption = true;
+//              },
+//              child: Card(
+//                  color: Colors.black54,
+//                  elevation: 10,
+//                  shape: RoundedRectangleBorder(
+//                      borderRadius: BorderRadius.all(Radius.circular(10))),
+//                  child: Padding(
+//                    padding: const EdgeInsets.all(18.0),
+//                    child: Text(
+//                      'Encrypt all in the folder',
+//                      style: TextStyle(color: Colors.white),
+//                    ),
+//                  )),
+//            ),
+//            Container(
+//                width: double.infinity,
+//                child: Padding(
+//                  padding: const EdgeInsets.all(8.0),
+//                  child: TextField(
+//                    controller: tc2,
+//                  ),
+//                )),
             InkWell(
               onTap: () {
-                openFileExplorer().then((value) => _scaffoldKey.currentState
-                    .showSnackBar(
-                        SnackBar(content: Text('Successfully Encrypted'))));
+                openFileExplorer().then(
+                  (value) => _scaffoldKey.currentState.showSnackBar(
+                    SnackBar(
+                      content: Text('Successfully Encrypted'),
+                    ),
+                  ),
+                );
               },
               child: Card(
-                  color: Colors.black54,
-                  elevation: 10,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
-                  child: Padding(
-                    padding: const EdgeInsets.all(18.0),
-                    child: Text(
-                      'Select and encrypt files',
-                      style: TextStyle(color: Colors.white),
+                color: Colors.blue,
+                elevation: 10,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10),),),
+                child: Padding(
+                  padding: const EdgeInsets.all(18.0),
+                  child: Container(
+                    width: width * 0.6,
+                    child: Column(
+                      children: <Widget>[
+                        Image.asset(
+                          'assets/lock.png',
+                          height: height * 0.25,
+                        ),
+                        SizedBox(
+                          height: height * 0.02,
+                        ),
+                        Text(
+                          'Encrypt videos',
+                          style: TextStyle(
+                              color: Colors.white, fontSize: height * 0.03),
+                        )
+                      ],
                     ),
-                  )),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: height * 0.04,
             ),
             InkWell(
               onTap: () {
@@ -312,106 +335,121 @@ class _MyHomePageState extends State<MyHomePage> {
                         SnackBar(content: Text('Successfully Decrypted'))));
               },
               child: Card(
-                  color: Colors.black54,
+                  color: Colors.blue,
                   elevation: 10,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
                   child: Padding(
                     padding: const EdgeInsets.all(18.0),
-                    child: Text(
-                      'Decrypt file',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  )),
-            ),
-            InkWell(
-              onTap: () async {
-                File filePlayed = await FilePicker.getFile(); //Meeeooowwwww
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => VideoPlayer(
-                      path: filePlayed.path,
-                    ),
-                  ),
-                );
-              },
-              child: Card(
-                  color: Colors.black54,
-                  elevation: 10,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
-                  child: Padding(
-                    padding: const EdgeInsets.all(18.0),
-                    child: Text(
-                      'Play a video',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  )),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  child: Column(
-                    children: <Widget>[
-                      // your Content if there
-                      Container(
-                        color: Colors.black.withOpacity(0.3),
-                        width: double.infinity,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            'Folder Contents',
-                            style: TextStyle(fontSize: 20),
+                    child: Container(
+                      width: width * 0.6,
+                      child: Column(
+                        children: <Widget>[
+                          Image.asset(
+                            'assets/unlock.png',
+                            height: height * 0.25,
                           ),
-                        ),
+                          SizedBox(
+                            height: height * 0.02,
+                          ),
+                          Text(
+                            'Decrypt and play a video',
+                            style: TextStyle(
+                                color: Colors.white, fontSize: height * 0.03),
+                          )
+                        ],
                       ),
-                      Expanded(
-                        child: ListView.builder(
-                            itemCount: file.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return file[index].toString().contains('.aes') ||
-                                      (!file[index].toString().contains('.'))
-                                  ? InkWell(
-                                      onTap: () {
-                                        if (!basename(
-                                                file[index].toString().trim())
-                                            .toString()
-                                            .substring(
-                                                0,
-                                                basename(file[index]
-                                                            .toString()
-                                                            .trim())
-                                                        .toString()
-                                                        .length -
-                                                    1)
-                                            .contains('.aes')) {}
-                                      },
-                                      child: Card(
-                                          child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text(basename(
-                                                file[index].toString().trim())
-                                            .toString()
-                                            .substring(
-                                                0,
-                                                basename(file[index]
-                                                            .toString()
-                                                            .trim())
-                                                        .toString()
-                                                        .length -
-                                                    1)),
-                                      )),
-                                    )
-                                  : Container();
-                            }),
-                      )
-                    ],
-                  ),
-                ),
-              ),
+                    ),
+                  )),
             ),
+//            InkWell(
+//              onTap: () async {
+//                File filePlayed = await FilePicker.getFile(); //Meeeooowwwww
+//                Navigator.push(
+//                  context,
+//                  MaterialPageRoute(
+//                    builder: (context) => VideoPlayer(
+//                      path: filePlayed.path,
+//                    ),
+//                  ),
+//                );
+//              },
+//              child: Card(
+//                  color: Colors.black54,
+//                  elevation: 10,
+//                  shape: RoundedRectangleBorder(
+//                      borderRadius: BorderRadius.all(Radius.circular(10))),
+//                  child: Padding(
+//                    padding: const EdgeInsets.all(18.0),
+//                    child: Text(
+//                      'Play a video',
+//                      style: TextStyle(color: Colors.white),
+//                    ),
+//                  )),
+//            ),
+//            Expanded(
+//              child: Padding(
+//                padding: const EdgeInsets.all(8.0),
+//                child: Container(
+//                  child: Column(
+//                    children: <Widget>[
+//                      // your Content if there
+//                      Container(
+//                        color: Colors.black.withOpacity(0.3),
+//                        width: double.infinity,
+//                        child: Padding(
+//                          padding: const EdgeInsets.all(8.0),
+//                          child: Text(
+//                            'Folder Contents',
+//                            style: TextStyle(fontSize: 20),
+//                          ),
+//                        ),
+//                      ),
+//                      Expanded(
+//                        child: ListView.builder(
+//                            itemCount: file.length,
+//                            itemBuilder: (BuildContext context, int index) {
+//                              return file[index].toString().contains('.aes') ||
+//                                      (!file[index].toString().contains('.'))
+//                                  ? InkWell(
+//                                      onTap: () {
+//                                        if (!basename(
+//                                                file[index].toString().trim())
+//                                            .toString()
+//                                            .substring(
+//                                                0,
+//                                                basename(file[index]
+//                                                            .toString()
+//                                                            .trim())
+//                                                        .toString()
+//                                                        .length -
+//                                                    1)
+//                                            .contains('.aes')) {}
+//                                      },
+//                                      child: Card(
+//                                          child: Padding(
+//                                        padding: const EdgeInsets.all(8.0),
+//                                        child: Text(basename(
+//                                                file[index].toString().trim())
+//                                            .toString()
+//                                            .substring(
+//                                                0,
+//                                                basename(file[index]
+//                                                            .toString()
+//                                                            .trim())
+//                                                        .toString()
+//                                                        .length -
+//                                                    1)),
+//                                      )),
+//                                    )
+//                                  : Container();
+//                            }),
+//                      )
+//                    ],
+//                  ),
+//                ),
+//              ),
+//            ),
 //            InkWell(
 //              onTap: () async {
 //                File file = await FilePicker.getFile();
