@@ -300,7 +300,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 color: Colors.blue,
                 elevation: 10,
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10),),),
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10),
+                  ),
+                ),
                 child: Padding(
                   padding: const EdgeInsets.all(18.0),
                   child: Container(
