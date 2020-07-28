@@ -33,6 +33,9 @@ dependencies:
   fluttertoast: ^7.0.1
   path: 1.6.4
   permissions_plugin: ^1.1.4
+  flick_video_player: ^0.1.1
+  video_player: ^0.10.11+2
+  path_provider: ^1.6.11
 
 dev_dependencies:
   flutter_test:
