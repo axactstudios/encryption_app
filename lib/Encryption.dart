@@ -1,15 +1,14 @@
 import 'dart:io';
 import 'package:aes_crypt/aes_crypt.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class EncryptData {
-  static String encrypt_file(String path) {
+  static String encrypt_file(String path, String destPath) {
     AesCrypt crypt = AesCrypt();
     crypt.setOverwriteMode(AesCryptOwMode.on);
     crypt.setPassword('abcd');
     String encFilepath;
     try {
-      encFilepath = crypt.encryptFileSync(path);
+      encFilepath = crypt.encryptFileSync(path, destPath);
       print('The encryption has been completed successfully.');
     } on AesCryptException catch (e) {
       if (e.type == AesCryptExceptionType.destFileExists) {
