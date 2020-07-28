@@ -168,15 +168,15 @@ class _MyHomePageState extends State<MyHomePage> {
     String decryptedFilePath = await EncryptData.decrypt_file(spath);
     await print(
         '-----------------------${decryptedFilePath}-----------------------------');
-    File filePlayed =
-        await File('storage/emulated/0/EncryptedFiles/Snapchat-415885974.mp4');
+    File filePlayed = await File(decryptedFilePath);
 
     if (filePlayed != null) {
+      print(filePlayed.path);
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => VideoPlayer(
-            video: filePlayed,
+            path: filePlayed.path,
           ),
         ),
       );
@@ -308,13 +308,12 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             InkWell(
               onTap: () async {
-                File filePlayed;
-                filePlayed = await File('/storage/emulated/0/Test/Hi.mp4');//Meeeooowwwww
+                File filePlayed = await FilePicker.getFile(); //Meeeooowwwww
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => VideoPlayer(
-                      video: filePlayed,
+                      path: filePlayed.path,
                     ),
                   ),
                 );

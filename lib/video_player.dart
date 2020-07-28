@@ -5,59 +5,45 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoPlayer extends StatefulWidget {
-  File video;
+  String path;
 
-  VideoPlayer({this.video});
+  VideoPlayer({this.path});
 
   @override
   _VideoPlayerState createState() => _VideoPlayerState();
 }
 
 class _VideoPlayerState extends State<VideoPlayer> {
+  FlickManager flickManager;
+
   VideoPlayerController _controller;
 
   @override
   void initState() {
+    // TODO: implement initState
     super.initState();
-    _controller = VideoPlayerController.file(widget.video)
-      ..initialize().then((_) {
-        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-        setState(() {});
-      });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Video Demo',
-      home: Scaffold(
-        body: Center(
-          child: _controller.value.initialized
-              ? AspectRatio(
-                  aspectRatio: _controller.value.aspectRatio,
-                  child: VideoPlayer(),
-                )
-              : Container(),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            setState(() {
-              _controller.value.isPlaying
-                  ? _controller.pause()
-                  : _controller.play();
-            });
-          },
-          child: Icon(
-            _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-          ),
-        ),
+    File video = File('/${widget.path}');
+    flickManager = FlickManager(
+      videoPlayerController: VideoPlayerController.file(
+        video,
       ),
     );
   }
 
   @override
   void dispose() {
+    // TODO: implement dispose
     super.dispose();
-    _controller.dispose();
+    flickManager.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: FlickVideoPlayer(
+        flickManager: flickManager,
+      ),
+    );
   }
 }
