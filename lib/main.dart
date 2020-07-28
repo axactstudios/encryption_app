@@ -37,6 +37,21 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  String dest;
+
+  void folder() async {
+    Directory extDir = await getExternalStorageDirectory();
+    new Directory('/storage/emulated/0/Encrypted Files')
+        .create(recursive: true)
+        .then((Directory dir) {
+      print("My directory path ${dir.path}");
+      dest = dir.path;
+      setState(() {
+        print('----------------${dir.path} is the destination---------------');
+      });
+    });
+  }
+
   //mahcode
   Future<File> moveFile2(path, filename, destFolder) async {
     print('start');
@@ -73,7 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
     print('File path recieved $path');
 
     var name = basename(path);
-    String encryptedFilePath = EncryptData.encrypt_file(path);
+    String encryptedFilePath = EncryptData.encrypt_file(path, destFolderPath);
     print(encryptedFilePath);
     moveFile2(encryptedFilePath, name, destFolder);
   }
@@ -98,7 +113,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void _listofFiles() async {
     directory = (await getApplicationDocumentsDirectory()).path;
     setState(() {
-      file = io.Directory("storage/emulated/0/EncryptedFiles/")
+      file = io.Directory("$dest/")
           .listSync(); //use your folder name insted of resume.
     });
 
@@ -128,7 +143,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   encryptFiles() {
-    _paths.forEach((fileName, filePath) => {encryptfile(filePath)});
+    _paths.forEach((fileName, filePath) => {encryptfile(fileName, filePath)});
   }
 
   @override
@@ -137,6 +152,8 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     request();
     _listofFiles();
+    folder();
+
     print(
         '\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$ ${file.length}\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$');
   }
@@ -149,12 +166,13 @@ class _MyHomePageState extends State<MyHomePage> {
     ]);
   }
 
-  void encryptfile(path) async {
+  void encryptfile(fileName, path) async {
     print('File path recieved $path');
     String spath = path.substring(1, path.length);
     print('File slashed path is $spath');
     var name = basename(path);
-    String encryptedFilePath = EncryptData.encrypt_file(spath);
+    String destPath = '$dest/$fileName.aes';
+    String encryptedFilePath = EncryptData.encrypt_file(spath, destPath);
     print(encryptedFilePath);
     moveFile(encryptedFilePath, name);
   }
